@@ -1,0 +1,5 @@
+#!/bin/sh
+# Yeah I should create a make file but I don't care right now. 
+gcc fork_fuse.c -o fork_fuse
+gcc hello.c -D_FILE_OFFSET_BITS=64 -o hello_fuse -lfuse
+rm -f *.o 
