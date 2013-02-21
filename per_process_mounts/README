@@ -1,0 +1,8 @@
+./build 
+sudo ./fork_fuse 
+cat ./namespace.txt
+
+Check the leftover PID 
+cat /proc/PID/mounts of leftovers
+
+Wa-la it's hidden.. on destruction it's gone 
