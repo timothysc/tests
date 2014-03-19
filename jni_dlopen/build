@@ -1,0 +1,4 @@
+#!/bin/sh
+# Yeah I should create a make file but I don't care right now. 
+gcc -I/usr/lib/jvm/java/include -I/usr/lib/jvm/java/include/linux dlopen_jni.c -o dljni -ldl
+rm -f *.o 
