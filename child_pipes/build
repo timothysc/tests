@@ -1,0 +1,4 @@
+#!/bin/sh
+# Yeah I should create a make file but I don't care right now. 
+gcc child_pipes.c -o child_pipes
+rm -f *.o
