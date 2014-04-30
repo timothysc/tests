@@ -5,15 +5,15 @@
 #include <string>
 #include <dlfcn.h>
 
+// Stout code
+
 class DynamicLibrary
 {
   public:
 
-    ///< Default constructor
     DynamicLibrary()
     { m_hdl = 0; };
 
-    ///< Default destructor
     virtual ~DynamicLibrary()
     {
         if ( m_hdl )

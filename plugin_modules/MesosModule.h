@@ -5,6 +5,7 @@
 
 #include "boost/noncopyable.hpp"
 
+// in mesos proper.. 
 
 //////////////////////////////////////////
 // highlander approach to class loading (there can be only one!)
@@ -18,8 +19,6 @@ public:
     virtual ~SomeBase() {;}
 
     virtual void does_stuff() = 0;
-
-    load
 
     virtual int version()
     { return m_version; }
