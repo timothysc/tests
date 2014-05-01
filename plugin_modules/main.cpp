@@ -29,7 +29,7 @@ void loadModule (const std::string & libpath)
     {
         printf("BOO WE SUCK!!!\n");
     }
-    
+
     printf("***** ABOUT TO CLOSE LIBRARY *****\n");
 }
 

@@ -4,9 +4,8 @@
 #include "boost/noncopyable.hpp"
 
 //////////////////////////////////////////
-// highlander approach to class loading (there can be only one!)
+// highlander approach to class loading, (there can be only one!)
 // not always true, but sometimes nice when coupled with forking
-// that way it ensures each "Module Load" has a unique 
 
 // Note once you create your interface you need to maintain your api
 // or else your vtable is fubar.

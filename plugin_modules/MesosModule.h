@@ -10,8 +10,6 @@
 #include "boost/function.hpp"
 
 
-#define LOOKUP_SYMBOL magikMagikSymbolYo
-
 // in mesos proper.. 
 
 // So the separation around symbol semantics is important.

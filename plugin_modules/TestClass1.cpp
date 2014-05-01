@@ -28,7 +28,8 @@ public:
 extern "C" {
     boost::shared_ptr< SomeBase > magikMagikSymbolYo( void * foo )
     {
-        boost::shared_ptr< SomeBase > ret; 
+        // if you truly want to highlander you make a hidden static global
+        boost::shared_ptr< SomeBase > ret;
         ret.reset(new MyPluginClassV1(/*foo*/));
 
         return (ret);
