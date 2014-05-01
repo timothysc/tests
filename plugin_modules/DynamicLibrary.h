@@ -3,10 +3,11 @@
 #define __DYNAMIC_LIBRARY__
 
 #include <string>
+#include <stdio.h>
+#include <stdlib.h>
 #include <dlfcn.h>
 
-// Stout code
-
+// Stout code 
 class DynamicLibrary
 {
   public:
@@ -17,7 +18,10 @@ class DynamicLibrary
     virtual ~DynamicLibrary()
     {
         if ( m_hdl )
+        {
+            printf("Closing Library\n");
             this->close();
+        }
     };
 
    int open( const std::string & szModulePath )
@@ -58,35 +62,6 @@ class DynamicLibrary
     void * m_hdl;
 
 };
-
-
-// So the separation around symbol semantics is important.
-// otherwise the encapsulation becomes fuzzy.
-
-// Below are utility functions which gives an implied context
-// a single f(n) will return a shared ptr;
-
-// You can really template the f(n) signature & params too
-// but were going to plaid here
-
-template <class T>
-shared_ptr<T> instantiate_singleton_class( shared_ptr <DynamicLibrary> pLib,
-                          const char * pszMagikSymbol,
-                          void * optional_args=0 )
-{
-    boost::function< boost::shared_ptr<T> ( void * ) > MyNewClassFn;
-    boost::shared_ptr<T> ret;
-    void * pSymbol=0;
-
-    if (0 == pLib->sym(std::string(pszMagikSymbol) , pSymbol))
-    {
-        MyNewClassFn  = boost::bind( reinterpret_cast< boost::shared_ptr<T> (*)(void *) > (pSymbol), _1 );
-        ret = MyNewClassFn(optional_args);
-    }
-
-    return ret;
-}
-
 
 #endif
 

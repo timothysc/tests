@@ -1,52 +1,65 @@
 
-
 #ifndef __MESOS_MODULE__
 #define __MESOS_MODULE__
 
-#include "boost/noncopyable.hpp"
+#include <string> 
+#include "DynamicLibrary.h"
+#include "MyFakeInterface.h"
+#include "boost/shared_ptr.hpp"
+#include "boost/bind.hpp"
+#include "boost/function.hpp"
+
+
+#define LOOKUP_SYMBOL magikMagikSymbolYo
 
 // in mesos proper.. 
 
-//////////////////////////////////////////
-// highlander approach to class loading (there can be only one!)
-// not always true, but sometimes nice when coupled with forking
-// that way it ensures each "Module Load" has a unique 
-class SomeBase : public boost::noncopyable 
+// So the separation around symbol semantics is important.
+// otherwise the encapsulation becomes fuzzy.
+
+// Below are utility functions which gives an implied context
+// a single f(n) will return a shared ptr;
+
+// You can really template the f(n) signature & params too
+// plus have all kinds of loading patterns and policies
+// but I'm keeping it simple here, but giving the idea.
+
+template <class T>
+boost::shared_ptr<T> instantiate_singleton_class( boost::shared_ptr <DynamicLibrary> pLib,
+                                           const char * pszMagikSymbol,
+                                           void * optional_args=0 )
 {
-public:
+    boost::function< boost::shared_ptr<T> ( void * ) > MyNewClassFn;
+    boost::shared_ptr<T> ret;
+    void * pSymbol=0;
 
-    SomeBase() : m_version(1) {;}
-    virtual ~SomeBase() {;}
+    if (0 == pLib->sym(std::string(pszMagikSymbol) , pSymbol))
+    {
+        MyNewClassFn  = boost::bind( reinterpret_cast< boost::shared_ptr<T> (*)(void *) > (pSymbol), _1 );
+        ret = MyNewClassFn(optional_args);
+    }
 
-    virtual void does_stuff() = 0;
-
-    virtual int version()
-    { return m_version; }
-
-protected:
-    int m_version;
+    return ret;
 }
 
 //////////////////////////////////////////
-class SomeDerivedV2 : public class SomeBase
-{
-public:
-
-    SomeDerivedV2() : m_version(2) {;}
-    virtual ~SomeDerivedV2() {;}
-
-    virtual void does_more_stuff() = 0;
-
-protected:
-    int m_magik_private_stuff;
-}
-
-
-//////////////////////////////////////////
-template <class T> 
 class MesosModule
 {
-    friend class MesosModuleLoader;
+public:
+    MesosModule(){;}
+    virtual ~MesosModule(){;}
+
+    virtual boost::shared_ptr<SomeBase> load( const std::string & path )
+    {
+        pDynamicLib.reset(new DynamicLibrary());
+
+        if ( 0 == pDynamicLib->open(path) ) 
+        {
+            pImpl = instantiate_singleton_class<SomeBase>(pDynamicLib, "magikMagikSymbolYo");
+        }
+
+        return pImpl;
+    };
 
 protected:
 
@@ -54,23 +67,7 @@ protected:
     boost::shared_ptr<DynamicLibrary> pDynamicLib;
 
     // this could be a list.
-    boost::shared_ptr<T> pImpl;
-}
-
-//////////////////////////////////////////
-template <class T> 
-class MesosModuleLoader
-{
-public:
-    static boost::shared_ptr<T> load(const std::string & szSomePath);
-
-    // you could add all your other utility functions.
-
-private:
-    static std::vector< MesosModule<T> > m_modules;
-
-}
-
-
+    boost::shared_ptr<SomeBase> pImpl;
+};
 
 #endif
